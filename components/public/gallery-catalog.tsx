@@ -24,7 +24,7 @@ export function GalleryCatalog({ initialArtworks }: { initialArtworks: ArtworkWi
     <section className="mx-auto max-w-6xl px-5 py-10 md:py-16">
       <div className="flex flex-col gap-5 border-t border-ink/20 pt-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm uppercase text-moss">Works</p>
+          <p className="text-sm uppercase text-moss">Works / 작품</p>
           <h2 className="mt-2 font-serif text-4xl text-ink">작품 목록</h2>
         </div>
         <label className="focus-within:ring-clay flex w-full max-w-md items-center gap-3 border-b border-ink/30 py-3 focus-within:ring-2">
