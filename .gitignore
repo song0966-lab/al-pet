@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.env
+.env.local
+.pnpm-store
+.tools
+coverage
+*.tsbuildinfo
+.next-dev*.log
+.next-dev*.err
