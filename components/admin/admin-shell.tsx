@@ -21,7 +21,7 @@ export function AdminShell({ children, session }: { children: ReactNode; session
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4">
           <div>
             <Link className="font-serif text-xl text-ink focus-ring" href="/admin/artworks">
-              Exhibition Admin
+              Exhibition Admin / 전시 관리자
             </Link>
             <p className="mt-1 text-xs text-graphite">{session.email}</p>
           </div>
