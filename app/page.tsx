@@ -12,7 +12,7 @@ export default async function HomePage() {
         <section className="mx-auto max-w-6xl px-5 pb-8 pt-12 md:pt-20">
           <div className="grid gap-10 md:grid-cols-[1.1fr_0.9fr] md:items-end">
             <div>
-              <p className="text-sm uppercase text-moss">Single Exhibition Catalog</p>
+              <p className="text-sm uppercase text-moss">Single Exhibition Catalog / 단일 전시 카탈로그</p>
               <h1 className="mt-4 max-w-3xl font-serif text-6xl leading-none text-ink md:text-8xl">
                 머무는 시선의 기록
               </h1>
