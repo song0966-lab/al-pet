@@ -61,7 +61,7 @@ export function AdminArtworkList() {
       <section className="mx-auto max-w-6xl px-5 py-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm uppercase text-moss">Collection</p>
+            <p className="text-sm uppercase text-moss">Collection / 작품 관리</p>
             <h1 className="mt-2 font-serif text-5xl text-ink">작품 관리</h1>
           </div>
           <button
