@@ -42,3 +42,7 @@ pnpm typecheck
 pnpm lint
 pnpm build
 ```
+
+## 배포 준비
+
+Supabase와 Vercel 설정 순서는 [배포 및 설정 가이드](docs/setup-and-deploy.md)를 참고합니다.
