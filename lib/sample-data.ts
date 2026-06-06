@@ -7,6 +7,8 @@ export const sampleExhibition: Exhibition = {
   venue: '화이트룸 갤러리',
   startsAt: '2026-06-01',
   endsAt: '2026-06-30',
+  viewingHours: '10:00 - 18:00',
+  visitorNotice: '작품 앞에서 잠시 머물며 천천히 감상해주세요.',
   heroImageUrl:
     'https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=1600&q=82',
   introduction:
