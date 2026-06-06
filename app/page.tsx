@@ -1,6 +1,8 @@
 import { SiteHeader } from '@/components/site-header';
+import { ExhibitionInfoPanel } from '@/components/public/exhibition-info-panel';
 import { GalleryCatalog } from '@/components/public/gallery-catalog';
 import { getPublishedArtworks } from '@/lib/artwork-repository';
+import { sampleExhibition } from '@/lib/sample-data';
 
 export default async function HomePage() {
   const artworks = await getPublishedArtworks();
@@ -23,6 +25,7 @@ export default async function HomePage() {
             </p>
           </div>
         </section>
+        <ExhibitionInfoPanel exhibition={sampleExhibition} />
         <GalleryCatalog initialArtworks={artworks} />
       </main>
     </>
