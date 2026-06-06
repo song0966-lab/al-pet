@@ -1,4 +1,5 @@
 import { sortArtworks } from './artwork-utils';
+import { withExhibitionGuideDefaults } from './exhibition-info';
 import { sampleArtworks, sampleExhibition } from './sample-data';
 import type { ArtworkWithTranslation, Exhibition } from './types';
 
@@ -48,7 +49,7 @@ export function readLocalExhibition(): Exhibition {
   }
 
   try {
-    return JSON.parse(storedValue) as Exhibition;
+    return withExhibitionGuideDefaults(JSON.parse(storedValue) as Exhibition);
   } catch {
     writeLocalExhibition(sampleExhibition);
     return sampleExhibition;
