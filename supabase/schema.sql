@@ -1,5 +1,24 @@
 create extension if not exists "pgcrypto";
 
+create table if not exists public.exhibitions (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  subtitle text,
+  venue text not null,
+  starts_at date not null,
+  ends_at date not null,
+  viewing_hours text not null default '10:00 - 18:00',
+  visitor_notice text not null default '작품 앞에서 잠시 머물며 천천히 감상해주세요.',
+  hero_image_url text not null,
+  introduction text not null,
+  curator_note text not null,
+  is_published boolean not null default true,
+  created_by uuid references auth.users(id),
+  updated_by uuid references auth.users(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.artworks (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
@@ -31,8 +50,30 @@ create table if not exists public.artwork_translations (
 create index if not exists artworks_public_order_idx
   on public.artworks (is_published, display_order, slug);
 
+create index if not exists exhibitions_public_created_idx
+  on public.exhibitions (is_published, created_at);
+
+alter table public.exhibitions enable row level security;
 alter table public.artworks enable row level security;
 alter table public.artwork_translations enable row level security;
+
+create policy "Published exhibitions are readable by everyone"
+  on public.exhibitions
+  for select
+  using (is_published or auth.role() = 'authenticated');
+
+create policy "Authenticated users can insert exhibitions"
+  on public.exhibitions
+  for insert
+  to authenticated
+  with check (auth.uid() = created_by);
+
+create policy "Authenticated users can update exhibitions"
+  on public.exhibitions
+  for update
+  to authenticated
+  using (true)
+  with check (auth.uid() = updated_by);
 
 create policy "Published artworks are readable by everyone"
   on public.artworks
