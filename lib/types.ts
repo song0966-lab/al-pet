@@ -58,6 +58,8 @@ export type Exhibition = {
   venue: string;
   startsAt: string;
   endsAt: string;
+  viewingHours: string;
+  visitorNotice: string;
   heroImageUrl: string;
   introduction: string;
   curatorNote: string;
@@ -74,6 +76,8 @@ export type ExhibitionDraft = {
   venue: string;
   startsAt: string;
   endsAt: string;
+  viewingHours: string;
+  visitorNotice: string;
   heroImageUrl: string;
   introduction: string;
   curatorNote: string;
