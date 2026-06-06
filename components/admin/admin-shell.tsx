@@ -1,13 +1,18 @@
 'use client';
 
-import { LogOut, Plus } from 'lucide-react';
+import { FileText, LogOut, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ReactNode } from 'react';
 import { signOutAdmin } from '@/lib/admin-artwork-store';
 import type { AdminSession } from '@/lib/types';
 
-export function AdminShell({ children, session }: { children: ReactNode; session: AdminSession }) {
+export function AdminShell({
+  children,
+  session
+}: {
+  children: React.ReactNode;
+  session: AdminSession;
+}) {
   const router = useRouter();
 
   async function handleSignOut() {
@@ -16,32 +21,39 @@ export function AdminShell({ children, session }: { children: ReactNode; session
   }
 
   return (
-    <main className="min-h-screen bg-paper">
-      <header className="border-b border-ink/10 bg-paper/95">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-4">
+    <main className="min-h-screen bg-[#efeee8]">
+      <header className="border-b border-ink/10 bg-ink text-paper">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-5 md:flex-row md:items-center md:justify-between">
           <div>
-            <Link className="font-serif text-xl text-ink focus-ring" href="/admin/artworks">
+            <Link className="focus-ring font-serif text-2xl" href="/admin/artworks">
               Exhibition Admin / 전시 관리자
             </Link>
-            <p className="mt-1 text-xs text-graphite">{session.email}</p>
+            <p className="mt-1 text-sm text-paper/65">{session.email}</p>
           </div>
-          <nav className="flex items-center gap-2">
+          <div className="flex flex-wrap gap-2">
             <Link
-              className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm bg-ink px-4 text-sm font-medium text-paper"
+              className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm border border-paper/25 px-4 text-sm text-paper"
+              href="/admin/exhibition"
+            >
+              <FileText className="h-4 w-4" />
+              전시 안내
+            </Link>
+            <Link
+              className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm bg-paper px-4 text-sm font-medium text-ink"
               href="/admin/artworks/new"
             >
               <Plus className="h-4 w-4" />
               새 작품
             </Link>
             <button
-              className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm border border-ink/20 px-4 text-sm text-graphite"
+              className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm border border-paper/25 px-4 text-sm text-paper"
               onClick={handleSignOut}
               type="button"
             >
               <LogOut className="h-4 w-4" />
               로그아웃
             </button>
-          </nav>
+          </div>
         </div>
       </header>
       {children}
