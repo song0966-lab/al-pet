@@ -11,6 +11,8 @@ const validDraft: ExhibitionDraft = {
   venue: '화이트룸 갤러리',
   startsAt: '2026-06-01',
   endsAt: '2026-06-30',
+  viewingHours: '10:00 - 18:00',
+  visitorNotice: '작품 앞에서 잠시 머물며 천천히 감상해주세요.',
   heroImageUrl: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262',
   introduction: '작품 앞에서 잠시 멈추는 시간을 위해 만든 전시입니다.',
   curatorNote: '작품과 관람자의 시선이 천천히 만나는 방식을 기록합니다.',
@@ -31,6 +33,8 @@ describe('exhibition draft validation', () => {
       venue: '',
       startsAt: '',
       endsAt: '',
+      viewingHours: '',
+      visitorNotice: '',
       heroImageUrl: '',
       introduction: '',
       curatorNote: '',
@@ -43,6 +47,8 @@ describe('exhibition draft validation', () => {
     expect(fieldErrors.venue).toContain('전시 장소를 입력하세요.');
     expect(fieldErrors.startsAt).toContain('전시 시작일을 입력하세요.');
     expect(fieldErrors.endsAt).toContain('전시 종료일을 입력하세요.');
+    expect(fieldErrors.viewingHours).toContain('관람 시간을 입력하세요.');
+    expect(fieldErrors.visitorNotice).toContain('관람 안내 문구를 입력하세요.');
     expect(fieldErrors.heroImageUrl).toContain('대표 이미지를 추가하세요.');
     expect(fieldErrors.introduction).toContain('전시 소개문을 입력하세요.');
     expect(fieldErrors.curatorNote).toContain('큐레이터 노트를 입력하세요.');
