@@ -7,6 +7,8 @@ const exhibitionDraftShape = z.object({
   venue: z.string(),
   startsAt: z.string(),
   endsAt: z.string(),
+  viewingHours: z.string(),
+  visitorNotice: z.string(),
   heroImageUrl: z.string(),
   introduction: z.string(),
   curatorNote: z.string(),
@@ -48,6 +50,22 @@ export function validateExhibitionDraft(draft: ExhibitionDraft) {
         });
       }
 
+      if (!value.viewingHours.trim()) {
+        context.addIssue({
+          code: 'custom',
+          path: ['viewingHours'],
+          message: '관람 시간을 입력하세요.'
+        });
+      }
+
+      if (!value.visitorNotice.trim()) {
+        context.addIssue({
+          code: 'custom',
+          path: ['visitorNotice'],
+          message: '관람 안내 문구를 입력하세요.'
+        });
+      }
+
       if (!value.heroImageUrl.trim()) {
         context.addIssue({
           code: 'custom',
@@ -82,6 +100,8 @@ export function normalizeExhibitionDraft(draft: ExhibitionDraft): ExhibitionDraf
     venue: draft.venue.trim(),
     startsAt: draft.startsAt.trim(),
     endsAt: draft.endsAt.trim(),
+    viewingHours: draft.viewingHours.trim(),
+    visitorNotice: draft.visitorNotice.trim(),
     heroImageUrl: draft.heroImageUrl.trim(),
     introduction: draft.introduction.trim(),
     curatorNote: draft.curatorNote.trim(),
