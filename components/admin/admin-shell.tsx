@@ -27,7 +27,7 @@ const adminLinks = [
 
 export function AdminShell({
   children,
-  session
+  session: _session
 }: {
   children: ReactNode;
   session: AdminSession;
@@ -43,20 +43,16 @@ export function AdminShell({
   return (
     <main className="min-h-screen bg-[#efeee8]">
       <header className="border-b border-ink/10 bg-ink text-paper">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center justify-between gap-4">
-            <Link className="focus-ring inline-flex items-center gap-2 font-serif text-xl" href="/admin">
-              <FolderKanban className="h-5 w-5 text-paper/70" />
-              Exhibition Admin / 전시 관리자
-            </Link>
-            <AccountMenu
-              isOpen={isAccountOpen}
-              onSignOut={() => void handleSignOut()}
-              onToggle={() => setIsAccountOpen((current) => !current)}
-            />
-          </div>
+        <div className="mx-auto grid max-w-6xl grid-cols-[1fr_auto] gap-4 px-5 py-4 lg:grid-cols-[auto_1fr_auto] lg:items-center">
+          <Link className="focus-ring order-1 inline-flex items-center gap-2 font-serif text-xl" href="/admin">
+            <FolderKanban className="h-5 w-5 text-paper/70" />
+            전시 관리자
+          </Link>
 
-          <nav className="flex flex-wrap gap-2 text-sm lg:justify-end">
+          <nav
+            aria-label="관리자 메뉴"
+            className="order-3 col-span-2 flex flex-wrap gap-2 text-sm lg:order-2 lg:col-span-1 lg:justify-center"
+          >
             {adminLinks.map((link) => {
               const Icon = link.icon;
               return (
@@ -71,6 +67,12 @@ export function AdminShell({
               );
             })}
           </nav>
+
+          <AccountMenu
+            isOpen={isAccountOpen}
+            onSignOut={() => void handleSignOut()}
+            onToggle={() => setIsAccountOpen((current) => !current)}
+          />
         </div>
       </header>
       {children}
@@ -88,7 +90,7 @@ function AccountMenu({
   onSignOut: () => void;
 }) {
   return (
-    <div className="relative lg:order-last">
+    <div className="relative order-2 justify-self-end lg:order-3">
       <button
         aria-expanded={isOpen}
         className="focus-ring inline-flex h-8 items-center gap-1 rounded-sm border border-paper/20 px-2 text-xs text-paper/80 transition hover:border-paper/45 hover:text-paper"
