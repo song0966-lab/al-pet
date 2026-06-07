@@ -19,9 +19,19 @@ create table if not exists public.exhibitions (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.sections (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  display_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists public.artworks (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
+  section_id uuid references public.sections(id) on delete set null,
   artist_name text not null,
   year integer not null,
   medium text,
@@ -53,7 +63,11 @@ create index if not exists artworks_public_order_idx
 create index if not exists exhibitions_public_created_idx
   on public.exhibitions (is_published, created_at);
 
+create index if not exists sections_display_order_idx
+  on public.sections (display_order, title);
+
 alter table public.exhibitions enable row level security;
+alter table public.sections enable row level security;
 alter table public.artworks enable row level security;
 alter table public.artwork_translations enable row level security;
 
@@ -74,6 +88,18 @@ create policy "Authenticated users can update exhibitions"
   to authenticated
   using (true)
   with check (auth.uid() = updated_by);
+
+create policy "Sections are readable by everyone"
+  on public.sections
+  for select
+  using (true);
+
+create policy "Authenticated users can manage sections"
+  on public.sections
+  for all
+  to authenticated
+  using (true)
+  with check (true);
 
 create policy "Published artworks are readable by everyone"
   on public.artworks
