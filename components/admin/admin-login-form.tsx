@@ -3,8 +3,9 @@
 import { LogIn } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
-import { hasSupabaseConfig } from '@/lib/config';
+
 import { signInAdmin } from '@/lib/admin-artwork-store';
+import { hasSupabaseConfig } from '@/lib/config';
 
 export function AdminLoginForm() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export function AdminLoginForm() {
 
     try {
       await signInAdmin(email, password);
-      router.replace('/admin/artworks');
+      router.replace('/admin');
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : '로그인에 실패했습니다.');
     } finally {
@@ -56,7 +57,7 @@ export function AdminLoginForm() {
         />
       </div>
       {isDemoMode ? (
-        <p className="text-sm leading-6 text-moss">Supabase 환경 변수가 없어서 로컬 데모 모드로 실행됩니다.</p>
+        <p className="text-sm leading-6 text-moss">Supabase 환경 변수가 없어 로컬 데모 모드로 실행합니다.</p>
       ) : null}
       {error ? <p className="text-sm text-clay">{error}</p> : null}
       <button
