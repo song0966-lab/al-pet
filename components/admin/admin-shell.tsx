@@ -1,8 +1,10 @@
 'use client';
 
-import { FileText, LogOut, Plus } from 'lucide-react';
+import { FileText, LogOut, Plus, Tags } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import type { ReactNode } from 'react';
+
 import { signOutAdmin } from '@/lib/admin-artwork-store';
 import type { AdminSession } from '@/lib/types';
 
@@ -10,7 +12,7 @@ export function AdminShell({
   children,
   session
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   session: AdminSession;
 }) {
   const router = useRouter();
@@ -36,14 +38,21 @@ export function AdminShell({
               href="/admin/exhibition"
             >
               <FileText className="h-4 w-4" />
-              전시 안내
+              Guide / 전시 안내
+            </Link>
+            <Link
+              className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm border border-paper/25 px-4 text-sm text-paper"
+              href="/admin/sections"
+            >
+              <Tags className="h-4 w-4" />
+              Sections / 섹션
             </Link>
             <Link
               className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm bg-paper px-4 text-sm font-medium text-ink"
               href="/admin/artworks/new"
             >
               <Plus className="h-4 w-4" />
-              새 작품
+              New Artwork / 새 작품
             </Link>
             <button
               className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm border border-paper/25 px-4 text-sm text-paper"
@@ -51,7 +60,7 @@ export function AdminShell({
               type="button"
             >
               <LogOut className="h-4 w-4" />
-              로그아웃
+              Logout / 로그아웃
             </button>
           </div>
         </div>
