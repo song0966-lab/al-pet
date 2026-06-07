@@ -1,5 +1,5 @@
 import { withExhibitionGuideDefaults } from './exhibition-info';
-import type { ArtworkTranslation, ArtworkWithTranslation, Exhibition } from './types';
+import type { ArtworkTranslation, ArtworkWithTranslation, Exhibition, Section } from './types';
 
 type SupabaseTranslationRow = {
   locale: string;
@@ -13,6 +13,7 @@ export type SupabaseArtworkRow = {
   id: string;
   slug: string;
   artist_name: string;
+  section_id: string | null;
   year: number;
   medium: string | null;
   dimensions: string | null;
@@ -25,6 +26,13 @@ export type SupabaseArtworkRow = {
   created_at: string;
   updated_at: string;
   artwork_translations?: SupabaseTranslationRow[] | SupabaseTranslationRow | null;
+};
+
+export type SupabaseSectionRow = {
+  id: string;
+  title: string;
+  description: string | null;
+  display_order: number;
 };
 
 export type SupabaseExhibitionRow = {
@@ -64,6 +72,7 @@ export function mapSupabaseArtwork(row: SupabaseArtworkRow): ArtworkWithTranslat
   return {
     id: row.id,
     slug: row.slug,
+    sectionId: row.section_id,
     artistName: row.artist_name,
     year: row.year,
     medium: row.medium ?? '',
@@ -77,6 +86,15 @@ export function mapSupabaseArtwork(row: SupabaseArtworkRow): ArtworkWithTranslat
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     translation
+  };
+}
+
+export function mapSupabaseSection(row: SupabaseSectionRow): Section {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description ?? '',
+    displayOrder: row.display_order
   };
 }
 
