@@ -99,6 +99,12 @@ export type Section = {
   displayOrder: number;
 };
 
+export type SectionDraft = {
+  title: string;
+  description: string;
+  displayOrder: number;
+};
+
 export type QRLink = {
   id: string;
   artworkId: string;
