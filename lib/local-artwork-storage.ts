@@ -1,10 +1,12 @@
 import { sortArtworks } from './artwork-utils';
 import { withExhibitionGuideDefaults } from './exhibition-info';
-import { sampleArtworks, sampleExhibition } from './sample-data';
-import type { ArtworkWithTranslation, Exhibition } from './types';
+import { sampleArtworks, sampleExhibition, sampleSections } from './sample-data';
+import { sortSections } from './section-utils';
+import type { ArtworkWithTranslation, Exhibition, Section } from './types';
 
 export const LOCAL_ARTWORKS_KEY = 'exhibition-catalog-artworks';
 export const LOCAL_EXHIBITION_KEY = 'exhibition-catalog-exhibition';
+export const LOCAL_SECTIONS_KEY = 'exhibition-catalog-sections';
 export const LOCAL_ADMIN_SESSION_KEY = 'exhibition-catalog-admin-session';
 
 export function readLocalArtworks(): ArtworkWithTranslation[] {
@@ -62,4 +64,32 @@ export function writeLocalExhibition(exhibition: Exhibition) {
   }
 
   window.localStorage.setItem(LOCAL_EXHIBITION_KEY, JSON.stringify(exhibition));
+}
+
+export function readLocalSections(): Section[] {
+  if (typeof window === 'undefined') {
+    return sampleSections;
+  }
+
+  const storedValue = window.localStorage.getItem(LOCAL_SECTIONS_KEY);
+
+  if (!storedValue) {
+    writeLocalSections(sampleSections);
+    return sampleSections;
+  }
+
+  try {
+    return sortSections(JSON.parse(storedValue) as Section[]);
+  } catch {
+    writeLocalSections(sampleSections);
+    return sampleSections;
+  }
+}
+
+export function writeLocalSections(sections: Section[]) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.localStorage.setItem(LOCAL_SECTIONS_KEY, JSON.stringify(sortSections(sections)));
 }
