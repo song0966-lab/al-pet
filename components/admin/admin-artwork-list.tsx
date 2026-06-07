@@ -1,10 +1,11 @@
 'use client';
 
-import { Eye, EyeOff, Pencil, RefreshCw } from 'lucide-react';
+import { Eye, EyeOff, Pencil, Plus, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+
 import {
   getAdminSession,
   listAdminArtworks,
@@ -64,14 +65,23 @@ export function AdminArtworkList() {
             <p className="text-sm uppercase text-moss">Collection / 작품 관리</p>
             <h1 className="mt-2 font-serif text-5xl text-ink">작품 관리</h1>
           </div>
-          <button
-            className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm border border-ink/20 px-4 text-sm text-graphite"
-            onClick={loadArtworks}
-            type="button"
-          >
-            <RefreshCw className="h-4 w-4" />
-            새로고침
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm bg-ink px-4 text-sm font-medium text-paper"
+              href="/admin/artworks/new"
+            >
+              <Plus className="h-4 w-4" />
+              새 작품 추가
+            </Link>
+            <button
+              className="focus-ring inline-flex h-10 items-center gap-2 rounded-sm border border-ink/20 px-4 text-sm text-graphite"
+              onClick={loadArtworks}
+              type="button"
+            >
+              <RefreshCw className="h-4 w-4" />
+              새로고침
+            </button>
+          </div>
         </div>
 
         {error ? <p className="mt-6 text-sm text-clay">{error}</p> : null}
