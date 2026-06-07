@@ -9,6 +9,7 @@ const artworkSelect = `
   id,
   slug,
   artist_name,
+  section_id,
   year,
   medium,
   dimensions,
