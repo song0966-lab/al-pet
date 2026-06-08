@@ -36,8 +36,8 @@ export function GalleryCatalog({
   const filteredArtworks = useMemo(() => searchArtworks(sectionArtworks, query), [sectionArtworks, query]);
 
   return (
-    <section aria-label="작품 목록" className="mx-auto max-w-6xl px-5 py-10 md:py-16">
-      <div className="flex flex-col gap-5 border-t border-ink/20 pt-6 md:flex-row md:items-end md:justify-between">
+    <section aria-label="작품 목록" className="mx-auto max-w-6xl px-5 pb-10 pt-6 md:pb-16 md:pt-8">
+      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm uppercase text-moss">Works</p>
           <h2 className="mt-2 font-serif text-4xl text-ink">작품 목록</h2>
