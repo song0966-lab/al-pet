@@ -190,9 +190,9 @@ function StatusCell({
   return (
     <div
       aria-label={`${artwork.translation.title} 상태`}
-      className="flex flex-wrap items-center gap-2"
+      className="flex flex-col items-start gap-2"
     >
-      <p className="mr-1 text-xs font-semibold text-graphite/55 md:hidden">상태</p>
+      <p className="text-xs font-semibold text-graphite/55 md:hidden">상태</p>
       <span
         className={`inline-flex h-8 items-center rounded-full px-3 text-xs font-semibold ${
           artwork.isPublished ? 'bg-moss/15 text-moss' : 'bg-clay/10 text-clay'
