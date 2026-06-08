@@ -15,6 +15,9 @@ import { listAdminSections } from '@/lib/admin-section-store';
 import type { AdminSession, ArtworkWithTranslation, Section } from '@/lib/types';
 import { AdminShell } from './admin-shell';
 
+const listGridClass =
+  'md:grid-cols-[96px_minmax(180px,1fr)_120px_120px_120px_88px_100px_88px]';
+
 export function AdminArtworkList() {
   const router = useRouter();
   const [session, setSession] = useState<AdminSession | null>(null);
@@ -104,18 +107,21 @@ export function AdminArtworkList() {
         {isLoading ? <p className="mt-8 text-graphite">불러오는 중입니다.</p> : null}
 
         <div className="mt-8 overflow-hidden rounded-sm border border-ink/10 bg-paper">
-          <div className="hidden grid-cols-[96px_minmax(220px,1fr)_130px_130px_130px_100px_150px] gap-4 bg-mist px-4 py-4 text-sm font-semibold text-graphite md:grid">
+          <div
+            className={`hidden gap-4 bg-mist px-4 py-4 text-sm font-semibold text-graphite md:grid ${listGridClass}`}
+          >
             <span className="col-span-2">작품</span>
             <span>작가</span>
             <span>섹션</span>
             <span>위치</span>
             <span>표시 순서</span>
+            <span>상태</span>
             <span>관리</span>
           </div>
 
           {artworks.map((artwork) => (
             <article
-              className="grid gap-4 border-b border-ink/10 p-4 last:border-b-0 md:grid-cols-[96px_minmax(220px,1fr)_130px_130px_130px_100px_150px] md:items-center"
+              className={`grid gap-4 border-b border-ink/10 p-4 last:border-b-0 md:grid md:items-center ${listGridClass}`}
               key={artwork.id}
             >
               <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-mist md:aspect-square">
@@ -138,28 +144,13 @@ export function AdminArtworkList() {
               <Field label="위치" value={artwork.location} />
               <Field label="표시 순서" value={String(artwork.displayOrder)} />
 
-              <div className="flex flex-wrap items-center gap-2 md:justify-end">
-                <span
-                  className={`inline-flex h-8 items-center rounded-full px-3 text-xs font-semibold ${
-                    artwork.isPublished
-                      ? 'bg-moss/15 text-moss'
-                      : 'bg-clay/10 text-clay'
-                  }`}
-                >
-                  {artwork.isPublished ? '공개' : '비공개'}
-                </span>
-                <button
-                  aria-label={artwork.isPublished ? '비공개로 전환' : '공개로 전환'}
-                  className="focus-ring inline-flex h-9 w-9 items-center justify-center rounded-sm border border-ink/15 text-graphite"
-                  onClick={() => void handleToggle(artwork)}
-                  type="button"
-                >
-                  {artwork.isPublished ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
+              <StatusCell artwork={artwork} onToggle={() => void handleToggle(artwork)} />
+
+              <div
+                aria-label={`${artwork.translation.title} 관리`}
+                className="flex items-center md:justify-start"
+              >
+                <p className="mr-3 text-xs font-semibold text-graphite/55 md:hidden">관리</p>
                 <Link
                   className="focus-ring inline-flex h-9 items-center gap-2 rounded-sm bg-ink px-3 text-sm font-medium text-paper"
                   href={`/admin/artworks/${artwork.id}`}
@@ -185,6 +176,38 @@ function Field({ label, value }: { label: string; value: string }) {
     <div className="min-w-0">
       <p className="text-xs font-semibold text-graphite/55 md:hidden">{label}</p>
       <p className="mt-1 truncate text-sm text-graphite md:mt-0 md:text-base">{value}</p>
+    </div>
+  );
+}
+
+function StatusCell({
+  artwork,
+  onToggle
+}: {
+  artwork: ArtworkWithTranslation;
+  onToggle: () => void;
+}) {
+  return (
+    <div
+      aria-label={`${artwork.translation.title} 상태`}
+      className="flex flex-wrap items-center gap-2"
+    >
+      <p className="mr-1 text-xs font-semibold text-graphite/55 md:hidden">상태</p>
+      <span
+        className={`inline-flex h-8 items-center rounded-full px-3 text-xs font-semibold ${
+          artwork.isPublished ? 'bg-moss/15 text-moss' : 'bg-clay/10 text-clay'
+        }`}
+      >
+        {artwork.isPublished ? '공개' : '비공개'}
+      </span>
+      <button
+        aria-label={artwork.isPublished ? '비공개로 전환' : '공개로 전환'}
+        className="focus-ring inline-flex h-9 w-9 items-center justify-center rounded-sm border border-ink/15 text-graphite"
+        onClick={onToggle}
+        type="button"
+      >
+        {artwork.isPublished ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
     </div>
   );
 }
