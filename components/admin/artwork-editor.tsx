@@ -166,8 +166,12 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
         {isLoading ? <p className="mt-8 text-graphite">Loading / 불러오는 중입니다.</p> : null}
         {message ? <p className="mt-6 text-sm text-clay">{message}</p> : null}
 
-        <form className="mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]" onSubmit={handleSubmit}>
-          <div className="space-y-4">
+        <form
+          className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(280px,0.95fr)_minmax(0,1.05fr)]"
+          onSubmit={handleSubmit}
+        >
+          <section aria-label="대표 이미지" className="space-y-4">
+            <h2 className="font-serif text-3xl text-ink">대표 이미지</h2>
             <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-mist">
               {draft.imageUrl ? (
                 <Image
@@ -189,9 +193,10 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
               <input accept="image/*" className="sr-only" onChange={handleUpload} type="file" />
             </label>
             {fieldErrors.imageUrl ? <FieldError messages={fieldErrors.imageUrl} /> : null}
-          </div>
+          </section>
 
-          <div className="grid gap-5">
+          <section aria-label="기본 정보" className="grid gap-5">
+            <h2 className="font-serif text-3xl text-ink">기본 정보</h2>
             <div className="grid gap-5 md:grid-cols-2">
               <TextField
                 error={fieldErrors['translation.title']?.[0]}
@@ -283,7 +288,7 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
               <Save className="h-4 w-4" />
               {isSaving ? 'Saving / 저장 중' : 'Save / 저장'}
             </button>
-          </div>
+          </section>
         </form>
       </section>
     </AdminShell>
