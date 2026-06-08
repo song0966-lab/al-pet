@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { AdminArtworkList } from '@/components/admin/admin-artwork-list';
@@ -114,6 +114,12 @@ describe('AdminArtworkList', () => {
     const firstStatusCell = screen.getByLabelText('빛의 기동 상태');
     const firstManagementCell = screen.getByLabelText('빛의 기동 관리');
     expect(firstStatusCell).toHaveTextContent('공개');
+    const firstStatusText = within(firstStatusCell).getByText('공개');
+    const firstStatusToggle = within(firstStatusCell).getByRole('button', { name: '비공개로 전환' });
+    expect(firstStatusCell).toHaveClass('flex-col');
+    expect(
+      firstStatusText.compareDocumentPosition(firstStatusToggle) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
     expect(firstManagementCell).toContainElement(screen.getAllByRole('link', { name: '수정' })[0]);
     expect(
       firstStatusCell.compareDocumentPosition(firstManagementCell) & Node.DOCUMENT_POSITION_FOLLOWING
