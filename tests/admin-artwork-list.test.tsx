@@ -104,10 +104,20 @@ describe('AdminArtworkList', () => {
     expect(screen.getAllByText('섹션').length).toBeGreaterThan(0);
     expect(screen.getAllByText('위치').length).toBeGreaterThan(0);
     expect(screen.getAllByText('표시 순서').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('상태').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('관리').length).toBeGreaterThan(0);
 
     expect(screen.getByText('공개')).toBeInTheDocument();
     expect(screen.getByText('비공개')).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: '수정' })).toHaveLength(2);
+
+    const firstStatusCell = screen.getByLabelText('빛의 기동 상태');
+    const firstManagementCell = screen.getByLabelText('빛의 기동 관리');
+    expect(firstStatusCell).toHaveTextContent('공개');
+    expect(firstManagementCell).toContainElement(screen.getAllByRole('link', { name: '수정' })[0]);
+    expect(
+      firstStatusCell.compareDocumentPosition(firstManagementCell) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
 
     const subtext = screen.getByText('캔버스에 아크릴 · 100 x 70 cm');
     expect(subtext).toHaveClass('text-xs');
