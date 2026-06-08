@@ -45,63 +45,81 @@ export function ArtworkDetailClient({
   }
 
   return (
-    <main>
-      <section className="mx-auto grid max-w-6xl gap-10 px-5 py-8 md:grid-cols-[0.95fr_1fr] md:py-14">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-mist shadow-editorial">
-          <Image
-            alt={artwork.translation.title}
-            className="object-cover"
-            fill
-            priority
-            sizes="(min-width: 768px) 48vw, 100vw"
-            src={artwork.imageUrl}
-          />
-        </div>
-        <article className="flex flex-col justify-between gap-12">
-          <div>
-            <Link className="focus-ring inline-flex items-center gap-2 text-sm text-moss" href="/">
-              <ArrowLeft className="h-4 w-4" />
-              작품 목록
-            </Link>
-            <p className="mt-10 text-sm uppercase text-clay">{artwork.location}</p>
-            <h1 className="mt-3 font-serif text-5xl leading-tight text-ink md:text-6xl">
-              {artwork.translation.title}
-            </h1>
-            <p className="mt-5 text-xl leading-8 text-graphite">{artwork.translation.summary}</p>
-          </div>
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-y border-ink/15 py-6 text-sm">
-            <div>
-              <dt className="text-graphite/70">작가</dt>
-              <dd className="mt-1 text-ink">{artwork.artistName}</dd>
-            </div>
-            <div>
-              <dt className="text-graphite/70">연도</dt>
-              <dd className="mt-1 text-ink">{artwork.year}</dd>
-            </div>
-            <div>
-              <dt className="text-graphite/70">재료</dt>
-              <dd className="mt-1 text-ink">{artwork.medium}</dd>
-            </div>
-            <div>
-              <dt className="text-graphite/70">크기</dt>
-              <dd className="mt-1 text-ink">{artwork.dimensions}</dd>
-            </div>
-          </dl>
-        </article>
-      </section>
+    <main className="bg-paper">
+      <article className="mx-auto max-w-6xl px-5 pb-20 pt-6 md:pt-10">
+        <Link className="focus-ring inline-flex items-center gap-2 text-sm text-moss" href="/">
+          <ArrowLeft className="h-4 w-4" />
+          작품 목록
+        </Link>
 
-      <section className="mx-auto max-w-3xl px-5 pb-20 pt-4">
-        <div className="space-y-7 font-serif text-2xl leading-10 text-ink">
-          {artwork.translation.body.split('\n').map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-        </div>
+        <section
+          aria-label="작품 상세"
+          className="mt-6 grid items-start gap-8 md:grid-cols-[minmax(260px,0.95fr)_minmax(0,1fr)] md:gap-10"
+        >
+          <figure className="space-y-3">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-mist shadow-editorial">
+              <Image
+                alt={artwork.translation.title}
+                className="object-cover"
+                fill
+                priority
+                sizes="(min-width: 768px) 48vw, 100vw"
+                src={artwork.imageUrl}
+              />
+            </div>
+          </figure>
+
+          <div className="flex flex-col gap-7 md:pt-6">
+            <header>
+              <p className="text-sm uppercase tracking-wide text-clay">{artwork.location}</p>
+              <h1 className="mt-3 font-serif text-5xl leading-tight text-ink md:text-6xl">
+                {artwork.translation.title}
+              </h1>
+              <p className="mt-5 text-xl leading-8 text-graphite">{artwork.translation.summary}</p>
+            </header>
+
+            <dl
+              aria-label="작품 기본 정보"
+              className="grid grid-cols-2 gap-x-6 gap-y-5 border-y border-ink/15 py-6 text-sm"
+            >
+              <div>
+                <dt className="text-graphite/70">작가</dt>
+                <dd className="mt-1 text-ink">{artwork.artistName}</dd>
+              </div>
+              <div>
+                <dt className="text-graphite/70">연도</dt>
+                <dd className="mt-1 text-ink">{artwork.year}</dd>
+              </div>
+              <div>
+                <dt className="text-graphite/70">재료</dt>
+                <dd className="mt-1 text-ink">{artwork.medium}</dd>
+              </div>
+              <div>
+                <dt className="text-graphite/70">크기</dt>
+                <dd className="mt-1 text-ink">{artwork.dimensions}</dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section aria-label="작품 소개" className="mx-auto mt-12 max-w-3xl md:mt-16">
+          <div className="space-y-7 text-lg leading-8 text-graphite md:font-serif md:text-2xl md:leading-10 md:text-ink">
+            {artwork.translation.body.split('\n').map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        </section>
+
         {artwork.translation.artistNote ? (
-          <blockquote className="mt-12 border-l-2 border-clay pl-6 text-lg leading-8 text-graphite">
-            {artwork.translation.artistNote}
-          </blockquote>
+          <aside
+            aria-label="작가 노트"
+            className="mx-auto mt-10 max-w-3xl border-l-2 border-clay pl-6 text-graphite"
+          >
+            <p className="text-sm font-semibold text-clay">작가 노트</p>
+            <blockquote className="mt-3 text-lg leading-8">{artwork.translation.artistNote}</blockquote>
+          </aside>
         ) : null}
-      </section>
+      </article>
     </main>
   );
 }
