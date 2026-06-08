@@ -14,7 +14,7 @@ export function ExhibitionInfoPanel({ exhibition }: { exhibition: Exhibition }) 
   const guideItems = buildExhibitionInfoItems(exhibition);
 
   return (
-    <section className="mx-auto max-w-6xl px-5 pb-8">
+    <section className="mx-auto max-w-6xl px-5 pb-2 md:pb-4">
       <div className="border-y border-ink/15 py-6 md:py-8">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
