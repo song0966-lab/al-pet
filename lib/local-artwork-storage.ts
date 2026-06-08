@@ -23,7 +23,11 @@ export function readLocalArtworks(): ArtworkWithTranslation[] {
 
   try {
     const parsed = JSON.parse(storedValue) as ArtworkWithTranslation[];
-    return sortArtworks(parsed);
+    const artworks = backfillSampleArtworks(parsed);
+    if (artworks.length !== parsed.length) {
+      writeLocalArtworks(artworks);
+    }
+    return sortArtworks(artworks);
   } catch {
     writeLocalArtworks(sampleArtworks);
     return sampleArtworks;
@@ -92,4 +96,15 @@ export function writeLocalSections(sections: Section[]) {
   }
 
   window.localStorage.setItem(LOCAL_SECTIONS_KEY, JSON.stringify(sortSections(sections)));
+}
+
+function backfillSampleArtworks(artworks: ArtworkWithTranslation[]) {
+  const existingIds = new Set(artworks.map((artwork) => artwork.id));
+  const missingSampleArtworks = sampleArtworks.filter((artwork) => !existingIds.has(artwork.id));
+
+  if (missingSampleArtworks.length === 0) {
+    return artworks;
+  }
+
+  return [...artworks, ...missingSampleArtworks];
 }
