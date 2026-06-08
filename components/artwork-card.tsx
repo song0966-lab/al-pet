@@ -21,16 +21,22 @@ export function ArtworkCard({ artwork }: { artwork: ArtworkWithTranslation }) {
             <h2 className="mt-2 font-serif text-3xl leading-tight text-ink md:text-4xl">
               {artwork.translation.title}
             </h2>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-graphite">
-              {artwork.translation.summary}
-            </p>
+            <p className="mt-3 text-base text-graphite">{artwork.artistName}</p>
           </div>
-          <div className="grid grid-cols-2 gap-3 text-sm text-graphite md:grid-cols-4">
-            <span>{artwork.artistName}</span>
-            <span>{artwork.year}</span>
-            <span>{artwork.medium}</span>
-            <span>{artwork.dimensions}</span>
-          </div>
+          <dl className="grid grid-cols-1 gap-3 border-t border-ink/10 pt-4 text-sm text-graphite sm:grid-cols-3">
+            <div>
+              <dt className="text-xs text-graphite/65">연도</dt>
+              <dd className="mt-1 text-ink">{artwork.year}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-graphite/65">재료</dt>
+              <dd className="mt-1 text-ink">{artwork.medium}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-graphite/65">크기</dt>
+              <dd className="mt-1 text-ink">{artwork.dimensions}</dd>
+            </div>
+          </dl>
         </div>
       </article>
     </Link>
