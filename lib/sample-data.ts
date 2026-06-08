@@ -43,6 +43,20 @@ export const sampleArtists: Artist[] = [
     bio: '식물, 표식, 작은 기록을 드로잉으로 옮기는 작가입니다.',
     profileImageUrl: '',
     displayOrder: 30
+  },
+  {
+    id: 'artist-cho',
+    name: '조현아',
+    bio: '유리와 반사면에 남는 기억을 설치와 사진으로 다룹니다.',
+    profileImageUrl: '',
+    displayOrder: 40
+  },
+  {
+    id: 'artist-park',
+    name: '박은솔',
+    bio: '일상의 낮은 풍경을 색면과 작은 선으로 번역합니다.',
+    profileImageUrl: '',
+    displayOrder: 50
   }
 ];
 
@@ -142,6 +156,114 @@ export const sampleArtworks: ArtworkWithTranslation[] = [
       body:
         '식물의 이름, 잎의 방향, 햇빛의 각도를 작은 표식으로 기록한 드로잉 연작입니다.',
       artistNote: '정원은 풍경이기 전에 읽을 수 있는 문장이라고 생각했습니다.'
+    }
+  },
+  {
+    id: 'artwork-layered-afternoon',
+    slug: 'layered-afternoon',
+    artistId: 'artist-kim',
+    sectionId: 'section-light',
+    artistName: '김서연',
+    year: 2026,
+    medium: '캔버스에 아크릴',
+    dimensions: '100 x 80 cm',
+    location: 'A-03',
+    imageUrl:
+      'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=1400&q=82',
+    displayOrder: 30,
+    isPublished: true,
+    createdBy: 'curator@example.com',
+    updatedBy: 'curator@example.com',
+    createdAt: '2026-05-29T00:00:00.000Z',
+    updatedAt: '2026-05-29T00:00:00.000Z',
+    translation: {
+      locale: 'ko',
+      title: '겹쳐진 오후',
+      summary: '시간이 겹치는 벽면의 색을 기록한 회화',
+      body:
+        '겹겹의 색면은 한낮에서 저녁으로 옮겨가는 빛의 변화를 담습니다. 화면의 가장 밝은 부분은 지나간 시간의 흔적처럼 남아 관람자의 시선을 천천히 붙잡습니다.',
+      artistNote: '오후는 사라지는 시간이 아니라 여러 겹으로 남는 시간이라고 느꼈습니다.'
+    }
+  },
+  {
+    id: 'artwork-hidden-line-map',
+    slug: 'hidden-line-map',
+    artistId: 'artist-jung',
+    sectionId: 'section-light',
+    artistName: '정민서',
+    year: 2025,
+    medium: '종이에 흑연과 잉크',
+    dimensions: '50 x 70 cm',
+    location: 'B-02',
+    imageUrl:
+      'https://images.unsplash.com/photo-1515405295579-ba7b45403062?auto=format&fit=crop&w=1400&q=82',
+    displayOrder: 40,
+    isPublished: true,
+    createdBy: 'curator@example.com',
+    updatedBy: 'curator@example.com',
+    createdAt: '2026-05-29T00:00:00.000Z',
+    updatedAt: '2026-05-29T00:00:00.000Z',
+    translation: {
+      locale: 'ko',
+      title: '숨은 선의 지도',
+      summary: '보이지 않는 이동 경로를 선으로 남긴 드로잉',
+      body:
+        '작품은 전시장 안에서 관람자가 무의식적으로 지나가는 길을 상상하며 그린 지도입니다. 얇은 선들은 서로 엇갈리고 끊기며, 하나의 완성된 길보다 머뭇거리는 움직임을 드러냅니다.',
+      artistNote: '선은 길이기도 하지만 망설임이 남긴 자국이기도 합니다.'
+    }
+  },
+  {
+    id: 'artwork-glass-surface-memory',
+    slug: 'glass-surface-memory',
+    artistId: 'artist-cho',
+    sectionId: 'section-memory',
+    artistName: '조현아',
+    year: 2026,
+    medium: '유리, 사진, 빛',
+    dimensions: '가변 설치',
+    location: 'B-03',
+    imageUrl:
+      'https://images.unsplash.com/photo-1554907984-15263bfd63bd?auto=format&fit=crop&w=1400&q=82',
+    displayOrder: 50,
+    isPublished: true,
+    createdBy: 'curator@example.com',
+    updatedBy: 'curator@example.com',
+    createdAt: '2026-05-29T00:00:00.000Z',
+    updatedAt: '2026-05-29T00:00:00.000Z',
+    translation: {
+      locale: 'ko',
+      title: '유리 표면의 기억',
+      summary: '반사되는 표면에 남는 장면을 다룬 설치',
+      body:
+        '유리 표면은 작품 앞의 사람과 뒤편의 공간을 동시에 비춥니다. 관람자는 작품을 보는 동안 자신이 서 있는 위치와 지나온 장면을 함께 마주하게 됩니다.',
+      artistNote: '반사는 사라지는 장면을 잠깐 붙잡아두는 가장 얇은 표면입니다.'
+    }
+  },
+  {
+    id: 'artwork-low-garden',
+    slug: 'low-garden',
+    artistId: 'artist-park',
+    sectionId: 'section-memory',
+    artistName: '박은솔',
+    year: 2024,
+    medium: '리넨에 아크릴',
+    dimensions: '72 x 91 cm',
+    location: 'C-01',
+    imageUrl:
+      'https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&w=1400&q=82',
+    displayOrder: 60,
+    isPublished: true,
+    createdBy: 'curator@example.com',
+    updatedBy: 'curator@example.com',
+    createdAt: '2026-05-29T00:00:00.000Z',
+    updatedAt: '2026-05-29T00:00:00.000Z',
+    translation: {
+      locale: 'ko',
+      title: '낮은 정원',
+      summary: '발아래 풍경을 낮은 시선으로 그린 회화',
+      body:
+        '작품은 눈높이를 낮추었을 때 보이는 작은 식물과 그림자를 다룹니다. 화면 곳곳의 짧은 붓질은 바닥 가까이에서 자라는 것들의 느린 리듬을 보여줍니다.',
+      artistNote: '작은 풍경은 가까이 다가갔을 때 비로소 하나의 장소가 됩니다.'
     }
   }
 ];
