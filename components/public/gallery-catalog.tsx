@@ -36,13 +36,13 @@ export function GalleryCatalog({
   const filteredArtworks = useMemo(() => searchArtworks(sectionArtworks, query), [sectionArtworks, query]);
 
   return (
-    <section className="mx-auto max-w-6xl px-5 py-10 md:py-16">
+    <section aria-label="작품 목록" className="mx-auto max-w-6xl px-5 py-10 md:py-16">
       <div className="flex flex-col gap-5 border-t border-ink/20 pt-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm uppercase text-moss">Works / 작품</p>
+          <p className="text-sm uppercase text-moss">Works</p>
           <h2 className="mt-2 font-serif text-4xl text-ink">작품 목록</h2>
         </div>
-        <label className="focus-within:ring-clay flex w-full max-w-md items-center gap-3 border-b border-ink/30 py-3 focus-within:ring-2">
+        <label className="focus-within:ring-clay flex w-full max-w-md items-center gap-3 border-b border-ink/30 py-3 focus-within:ring-2 md:ml-auto">
           <Search aria-hidden className="h-5 w-5 text-moss" />
           <input
             className="w-full bg-transparent text-base outline-none placeholder:text-graphite/55"
@@ -54,7 +54,10 @@ export function GalleryCatalog({
       </div>
 
       {sections.length > 0 ? (
-        <div className="mt-6 flex gap-2 overflow-x-auto pb-2">
+        <div
+          aria-label="작품 카테고리"
+          className="mt-6 flex gap-2 overflow-x-auto pb-2 md:flex-wrap md:overflow-visible md:pb-0"
+        >
           <button
             aria-pressed={activeSectionId === 'all'}
             className={`focus-ring h-10 shrink-0 rounded-sm border px-4 text-sm transition ${
@@ -63,7 +66,7 @@ export function GalleryCatalog({
             onClick={() => setActiveSectionId('all')}
             type="button"
           >
-            All / 전체
+            전체
           </button>
           {sections.map((section) => (
             <button
@@ -81,7 +84,7 @@ export function GalleryCatalog({
         </div>
       ) : null}
 
-      <div className="mt-10 space-y-10">
+      <div aria-label="작품 카드 목록" className="mt-10 grid gap-8 md:grid-cols-2 md:gap-x-6 md:gap-y-12">
         {filteredArtworks.map((artwork) => (
           <ArtworkCard artwork={artwork} key={artwork.id} />
         ))}
