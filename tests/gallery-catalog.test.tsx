@@ -82,8 +82,12 @@ describe('GalleryCatalog', () => {
     const search = screen.getByPlaceholderText('작품명, 작가명, 재료 검색');
     const categories = screen.getByLabelText('작품 카테고리');
     const cardGrid = screen.getByLabelText('작품 카드 목록');
+    const catalog = screen.getByLabelText('작품 목록');
+    const headingRow = title.closest('div')?.parentElement;
 
     expect(title.compareDocumentPosition(search) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(catalog).toHaveClass('pt-6');
+    expect(headingRow).not.toHaveClass('border-t');
     expect(categories).toHaveClass('md:flex-wrap');
     expect(categories).toHaveClass('md:overflow-visible');
     expect(screen.getByRole('button', { name: '전체' })).toHaveAttribute('aria-pressed', 'true');
