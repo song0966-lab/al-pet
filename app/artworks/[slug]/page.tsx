@@ -1,6 +1,6 @@
 import { SiteHeader } from '@/components/site-header';
 import { ArtworkDetailClient } from '@/components/public/artwork-detail-client';
-import { getPublishedArtworkBySlug } from '@/lib/artwork-repository';
+import { getPublishedArtworkBySlug, getPublishedArtworks } from '@/lib/artwork-repository';
 
 export default async function ArtworkDetailPage({
   params
@@ -8,12 +8,15 @@ export default async function ArtworkDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const artwork = await getPublishedArtworkBySlug(slug);
+  const [artwork, artworks] = await Promise.all([
+    getPublishedArtworkBySlug(slug),
+    getPublishedArtworks()
+  ]);
 
   return (
     <>
       <SiteHeader />
-      <ArtworkDetailClient initialArtwork={artwork} slug={slug} />
+      <ArtworkDetailClient initialArtwork={artwork} initialArtworks={artworks} slug={slug} />
     </>
   );
 }
