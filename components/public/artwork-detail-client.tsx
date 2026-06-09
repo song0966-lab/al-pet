@@ -1,28 +1,32 @@
 'use client';
 
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { filterPublishedArtworks } from '@/lib/artwork-utils';
+import { filterPublishedArtworks, sortArtworks } from '@/lib/artwork-utils';
 import { hasSupabaseConfig } from '@/lib/config';
 import { readLocalArtworks } from '@/lib/local-artwork-storage';
 import type { ArtworkWithTranslation } from '@/lib/types';
 
 export function ArtworkDetailClient({
   initialArtwork,
+  initialArtworks = initialArtwork ? [initialArtwork] : [],
   slug
 }: {
   initialArtwork: ArtworkWithTranslation | null;
+  initialArtworks?: ArtworkWithTranslation[];
   slug: string;
 }) {
   const [artwork, setArtwork] = useState(initialArtwork);
+  const [artworks, setArtworks] = useState(initialArtworks);
   const [loaded, setLoaded] = useState(Boolean(initialArtwork));
 
   useEffect(() => {
     if (!hasSupabaseConfig()) {
-      const localArtwork =
-        filterPublishedArtworks(readLocalArtworks()).find((item) => item.slug === slug) ?? null;
+      const localArtworks = sortArtworks(filterPublishedArtworks(readLocalArtworks()));
+      const localArtwork = localArtworks.find((item) => item.slug === slug) ?? null;
+      setArtworks(localArtworks);
       setArtwork(localArtwork);
     }
     setLoaded(true);
@@ -43,6 +47,14 @@ export function ArtworkDetailClient({
       </main>
     );
   }
+
+  const orderedArtworks = sortArtworks(filterPublishedArtworks(artworks));
+  const currentIndex = orderedArtworks.findIndex((item) => item.slug === artwork.slug);
+  const previousArtwork = currentIndex > 0 ? orderedArtworks[currentIndex - 1] : null;
+  const nextArtwork =
+    currentIndex >= 0 && currentIndex < orderedArtworks.length - 1
+      ? orderedArtworks[currentIndex + 1]
+      : null;
 
   return (
     <main className="bg-paper">
@@ -118,6 +130,47 @@ export function ArtworkDetailClient({
             <p className="text-sm font-semibold text-clay">작가 노트</p>
             <blockquote className="mt-3 text-lg leading-8">{artwork.translation.artistNote}</blockquote>
           </aside>
+        ) : null}
+
+        {previousArtwork || nextArtwork ? (
+          <nav
+            aria-label="이전 다음 작품"
+            className="mx-auto mt-14 max-w-3xl border-y border-ink/15 py-5"
+          >
+            <div className="grid gap-3 md:grid-cols-2">
+              {previousArtwork ? (
+                <Link
+                  className="focus-ring group flex flex-col gap-2 rounded-sm py-3 pr-4 text-left"
+                  href={`/artworks/${previousArtwork.slug}`}
+                >
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-moss">
+                    <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
+                    이전 작품
+                  </span>
+                  <span className="font-serif text-2xl leading-tight text-ink">
+                    {previousArtwork.translation.title}
+                  </span>
+                </Link>
+              ) : (
+                <span aria-hidden className="hidden md:block" />
+              )}
+
+              {nextArtwork ? (
+                <Link
+                  className="focus-ring group flex flex-col gap-2 rounded-sm py-3 text-left md:items-end md:pl-4 md:text-right"
+                  href={`/artworks/${nextArtwork.slug}`}
+                >
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-moss">
+                    다음 작품
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                  </span>
+                  <span className="font-serif text-2xl leading-tight text-ink">
+                    {nextArtwork.translation.title}
+                  </span>
+                </Link>
+              ) : null}
+            </div>
+          </nav>
         ) : null}
       </article>
     </main>
