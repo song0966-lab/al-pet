@@ -40,9 +40,33 @@ const artwork: ArtworkWithTranslation = {
   }
 };
 
+const previousArtwork: ArtworkWithTranslation = {
+  ...artwork,
+  id: 'artwork-previous',
+  slug: 'blue-room-study',
+  location: 'A-02',
+  displayOrder: 5,
+  translation: {
+    ...artwork.translation,
+    title: '푸른 방을 위한 습작'
+  }
+};
+
+const nextArtwork: ArtworkWithTranslation = {
+  ...artwork,
+  id: 'artwork-next',
+  slug: 'layered-afternoon',
+  location: 'A-03',
+  displayOrder: 20,
+  translation: {
+    ...artwork.translation,
+    title: '겹쳐진 오후'
+  }
+};
+
 describe('ArtworkDetailClient', () => {
   it('presents a mobile-first visitor detail page with existing artwork fields only', () => {
-    render(<ArtworkDetailClient initialArtwork={artwork} slug="slow-light" />);
+    render(<ArtworkDetailClient initialArtwork={artwork} initialArtworks={[artwork]} slug="slow-light" />);
 
     const backLink = screen.getByRole('link', { name: /작품 목록/ });
     const image = screen.getByRole('img', { name: '느린 빛' });
@@ -70,5 +94,25 @@ describe('ArtworkDetailClient', () => {
     expect(within(artistNote).getByText('빛은 멈춘 것처럼 보여도 조금씩 옮겨갑니다.')).toBeInTheDocument();
     expect(screen.queryByText(/QR/)).not.toBeInTheDocument();
     expect(screen.queryByText(/오디오/)).not.toBeInTheDocument();
+  });
+
+  it('places previous and next artwork links after the artist note without duplicating the list link', () => {
+    render(
+      <ArtworkDetailClient
+        initialArtwork={artwork}
+        initialArtworks={[artwork, previousArtwork, nextArtwork]}
+        slug="slow-light"
+      />
+    );
+
+    const artistNote = screen.getByLabelText('작가 노트');
+    const navigation = screen.getByLabelText('이전 다음 작품');
+    const previousLink = within(navigation).getByRole('link', { name: /이전 작품.*푸른 방을 위한 습작/ });
+    const nextLink = within(navigation).getByRole('link', { name: /다음 작품.*겹쳐진 오후/ });
+
+    expect(artistNote.compareDocumentPosition(navigation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(previousLink).toHaveAttribute('href', '/artworks/blue-room-study');
+    expect(nextLink).toHaveAttribute('href', '/artworks/layered-afternoon');
+    expect(screen.getAllByRole('link', { name: /작품 목록/ })).toHaveLength(1);
   });
 });
