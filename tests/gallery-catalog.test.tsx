@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { GalleryCatalog } from '@/components/public/gallery-catalog';
@@ -74,6 +74,8 @@ const sections: Section[] = [
   { id: 'section-drawing', title: '드로잉', description: '드로잉 작품', displayOrder: 50 }
 ];
 
+const restoreKey = 'exhibition-gallery-scroll-state';
+
 describe('GalleryCatalog', () => {
   it('keeps search fixed above wrapping categories and presents artworks in a two-column catalog grid', () => {
     render(<GalleryCatalog initialArtworks={artworks} initialSections={sections} />);
@@ -94,5 +96,44 @@ describe('GalleryCatalog', () => {
     expect(cardGrid).toHaveClass('grid');
     expect(cardGrid).toHaveClass('md:grid-cols-2');
     expect(within(cardGrid).getAllByRole('link')).toHaveLength(2);
+  });
+
+  it('stores the current catalog position before opening an artwork detail', () => {
+    Object.defineProperty(window, 'scrollY', { configurable: true, value: 640 });
+    window.sessionStorage.clear();
+
+    render(<GalleryCatalog initialArtworks={artworks} initialSections={sections} />);
+
+    fireEvent.change(screen.getByPlaceholderText('작품명, 작가명, 재료 검색'), {
+      target: { value: 'Blue' }
+    });
+    fireEvent.click(screen.getByRole('button', { name: '기억의 방' }));
+    const detailLink = screen.getByRole('link', { name: /Blue Room/ });
+    detailLink.addEventListener('click', (event) => event.preventDefault());
+    fireEvent.click(detailLink);
+
+    expect(JSON.parse(window.sessionStorage.getItem(restoreKey) ?? '{}')).toMatchObject({
+      activeSectionId: 'section-room',
+      query: 'Blue',
+      scrollY: 640
+    });
+  });
+
+  it('restores the previous catalog filters and scroll position when returning from detail', async () => {
+    window.history.replaceState({}, '', '/?restore=gallery');
+    window.sessionStorage.setItem(
+      restoreKey,
+      JSON.stringify({ activeSectionId: 'section-room', query: 'Blue', scrollY: 720 })
+    );
+    const scrollTo = vi.fn();
+    Object.defineProperty(window, 'scrollTo', { configurable: true, value: scrollTo });
+
+    render(<GalleryCatalog initialArtworks={artworks} initialSections={sections} />);
+
+    expect(screen.getByDisplayValue('Blue')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '기억의 방' })).toHaveAttribute('aria-pressed', 'true');
+    await waitFor(() => expect(scrollTo).toHaveBeenCalledWith({ behavior: 'auto', top: 720 }));
+    expect(window.sessionStorage.getItem(restoreKey)).toBeNull();
+    expect(window.location.search).toBe('');
   });
 });
