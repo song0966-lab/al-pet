@@ -10,6 +10,14 @@ import { filterArtworksBySection } from '@/lib/section-utils';
 import type { ArtworkWithTranslation, Section } from '@/lib/types';
 import { ArtworkCard } from '../artwork-card';
 
+const galleryScrollStateKey = 'exhibition-gallery-scroll-state';
+
+type GalleryScrollState = {
+  activeSectionId: string;
+  query: string;
+  scrollY: number;
+};
+
 export function GalleryCatalog({
   initialArtworks,
   initialSections
@@ -21,6 +29,7 @@ export function GalleryCatalog({
   const [activeSectionId, setActiveSectionId] = useState('all');
   const [artworks, setArtworks] = useState(initialArtworks);
   const [sections, setSections] = useState(initialSections);
+  const [pendingScrollY, setPendingScrollY] = useState<number | null>(null);
 
   useEffect(() => {
     if (!hasSupabaseConfig()) {
@@ -29,11 +38,70 @@ export function GalleryCatalog({
     }
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('restore') !== 'gallery') {
+      return;
+    }
+
+    try {
+      const savedState = window.sessionStorage.getItem(galleryScrollStateKey);
+      const parsedState = savedState ? (JSON.parse(savedState) as Partial<GalleryScrollState>) : null;
+
+      if (typeof parsedState?.query === 'string') {
+        setQuery(parsedState.query);
+      }
+      if (typeof parsedState?.activeSectionId === 'string') {
+        setActiveSectionId(parsedState.activeSectionId);
+      }
+      if (typeof parsedState?.scrollY === 'number') {
+        setPendingScrollY(parsedState.scrollY);
+      }
+
+      window.sessionStorage.removeItem(galleryScrollStateKey);
+    } catch {
+      window.sessionStorage.removeItem(galleryScrollStateKey);
+    }
+
+    params.delete('restore');
+    const nextSearch = params.toString();
+    const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ''}${window.location.hash}`;
+    window.history.replaceState(window.history.state, '', nextUrl);
+  }, []);
+
   const sectionArtworks = useMemo(
     () => filterArtworksBySection(sortArtworks(filterPublishedArtworks(artworks)), activeSectionId),
     [activeSectionId, artworks]
   );
   const filteredArtworks = useMemo(() => searchArtworks(sectionArtworks, query), [sectionArtworks, query]);
+
+  useEffect(() => {
+    if (pendingScrollY === null) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      window.scrollTo({ behavior: 'auto', top: pendingScrollY });
+      setPendingScrollY(null);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [filteredArtworks.length, pendingScrollY]);
+
+  const saveGalleryScrollState = () => {
+    try {
+      window.sessionStorage.setItem(
+        galleryScrollStateKey,
+        JSON.stringify({
+          activeSectionId,
+          query,
+          scrollY: window.scrollY
+        } satisfies GalleryScrollState)
+      );
+    } catch {
+      // Returning to the catalog still works even if private browsing blocks storage.
+    }
+  };
 
   return (
     <section aria-label="작품 목록" className="mx-auto max-w-6xl px-5 pb-10 pt-6 md:pb-16 md:pt-8">
@@ -86,7 +154,7 @@ export function GalleryCatalog({
 
       <div aria-label="작품 카드 목록" className="mt-10 grid gap-8 md:grid-cols-2 md:gap-x-6 md:gap-y-12">
         {filteredArtworks.map((artwork) => (
-          <ArtworkCard artwork={artwork} key={artwork.id} />
+          <ArtworkCard artwork={artwork} key={artwork.id} onOpenArtwork={saveGalleryScrollState} />
         ))}
       </div>
 
