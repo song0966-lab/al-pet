@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ArtworkDetailClient } from '@/components/public/artwork-detail-client';
@@ -114,5 +114,21 @@ describe('ArtworkDetailClient', () => {
     expect(previousLink).toHaveAttribute('href', '/artworks/blue-room-study');
     expect(nextLink).toHaveAttribute('href', '/artworks/layered-afternoon');
     expect(screen.getAllByRole('link', { name: /작품 목록/ })).toHaveLength(1);
+  });
+
+  it('opens and closes an enlarged image viewer from the artwork image', () => {
+    render(<ArtworkDetailClient initialArtwork={artwork} initialArtworks={[artwork]} slug="slow-light" />);
+
+    fireEvent.click(screen.getByRole('button', { name: '작품 이미지 크게 보기' }));
+
+    const dialog = screen.getByRole('dialog', { name: '확대 이미지' });
+    expect(within(dialog).getByRole('img', { name: '느린 빛 확대 이미지' })).toHaveAttribute(
+      'src',
+      'https://example.com/slow-light.jpg'
+    );
+
+    fireEvent.click(within(dialog).getByRole('button', { name: '확대 이미지 닫기' }));
+
+    expect(screen.queryByRole('dialog', { name: '확대 이미지' })).not.toBeInTheDocument();
   });
 });
