@@ -116,6 +116,25 @@ describe('ArtworkDetailClient', () => {
     expect(screen.getAllByRole('link', { name: /작품 목록/ })).toHaveLength(1);
   });
 
+  it('shows the current artwork position before previous and next navigation', () => {
+    render(
+      <ArtworkDetailClient
+        initialArtwork={artwork}
+        initialArtworks={[artwork, previousArtwork, nextArtwork]}
+        slug="slow-light"
+      />
+    );
+
+    const artistNote = screen.getByLabelText('작가 노트');
+    const position = screen.getByLabelText('작품 순서');
+    const navigation = screen.getByLabelText('이전 다음 작품');
+
+    expect(within(position).getByText('현재 작품')).toBeInTheDocument();
+    expect(within(position).getByText('2 / 3')).toBeInTheDocument();
+    expect(artistNote.compareDocumentPosition(position) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(position.compareDocumentPosition(navigation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('opens and closes an enlarged image viewer from the artwork image', () => {
     render(<ArtworkDetailClient initialArtwork={artwork} initialArtworks={[artwork]} slug="slow-light" />);
 
