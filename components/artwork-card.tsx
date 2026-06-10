@@ -2,9 +2,15 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { ArtworkWithTranslation } from '@/lib/types';
 
-export function ArtworkCard({ artwork }: { artwork: ArtworkWithTranslation }) {
+export function ArtworkCard({
+  artwork,
+  onOpenArtwork
+}: {
+  artwork: ArtworkWithTranslation;
+  onOpenArtwork?: () => void;
+}) {
   return (
-    <Link className="group block h-full focus-ring" href={`/artworks/${artwork.slug}`}>
+    <Link className="group block h-full focus-ring" href={`/artworks/${artwork.slug}`} onClick={onOpenArtwork}>
       <article aria-label={`${artwork.translation.title} 작품 카드`} className="flex h-full flex-col border-t border-ink/15 pt-5">
         <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-mist">
           <Image
