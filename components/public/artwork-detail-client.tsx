@@ -66,6 +66,7 @@ export function ArtworkDetailClient({
 
   const orderedArtworks = sortArtworks(filterPublishedArtworks(artworks));
   const currentIndex = orderedArtworks.findIndex((item) => item.slug === artwork.slug);
+  const hasArtworkPosition = currentIndex >= 0 && orderedArtworks.length > 1;
   const previousArtwork = currentIndex > 0 ? orderedArtworks[currentIndex - 1] : null;
   const nextArtwork =
     currentIndex >= 0 && currentIndex < orderedArtworks.length - 1
@@ -156,10 +157,19 @@ export function ArtworkDetailClient({
           </aside>
         ) : null}
 
+        {hasArtworkPosition ? (
+          <div aria-label="작품 순서" className="mx-auto mt-12 max-w-3xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-wide text-clay">현재 작품</p>
+            <p className="mt-2 font-serif text-3xl leading-none text-ink">
+              {currentIndex + 1} / {orderedArtworks.length}
+            </p>
+          </div>
+        ) : null}
+
         {previousArtwork || nextArtwork ? (
           <nav
             aria-label="이전 다음 작품"
-            className="mx-auto mt-14 max-w-3xl border-y border-ink/15 py-5"
+            className="mx-auto mt-6 max-w-3xl border-y border-ink/15 py-5"
           >
             <div className="grid gap-3 md:grid-cols-2">
               {previousArtwork ? (
