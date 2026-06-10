@@ -55,7 +55,7 @@ export function ArtworkDetailClient({
   if (!artwork) {
     return (
       <main className="mx-auto max-w-4xl px-5 py-20">
-        <Link className="focus-ring inline-flex items-center gap-2 text-sm text-moss" href="/">
+        <Link className="focus-ring inline-flex items-center gap-2 text-sm text-moss" href="/?restore=gallery">
           <ArrowLeft className="h-4 w-4" />
           작품 목록
         </Link>
@@ -76,7 +76,7 @@ export function ArtworkDetailClient({
   return (
     <main className="bg-paper">
       <article className="mx-auto max-w-6xl px-5 pb-20 pt-6 md:pt-10">
-        <Link className="focus-ring inline-flex items-center gap-2 text-sm text-moss" href="/">
+        <Link className="focus-ring inline-flex items-center gap-2 text-sm text-moss" href="/?restore=gallery">
           <ArrowLeft className="h-4 w-4" />
           작품 목록
         </Link>
