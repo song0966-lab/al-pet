@@ -75,7 +75,7 @@ describe('ArtworkDetailClient', () => {
     const body = screen.getByLabelText('작품 소개');
     const artistNote = screen.getByLabelText('작가 노트');
 
-    expect(backLink).toHaveAttribute('href', '/');
+    expect(backLink).toHaveAttribute('href', '/?restore=gallery');
     expect(backLink.compareDocumentPosition(image) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(image.compareDocumentPosition(title) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
