@@ -201,17 +201,17 @@ export function ArtworkDetailClient({
             aria-label="이전 다음 작품"
             className="mx-auto mt-6 max-w-3xl border-y border-ink/15 py-5"
           >
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid grid-cols-2 gap-4 md:gap-3">
               {previousArtwork ? (
                 <Link
-                  className="focus-ring group flex flex-col gap-2 rounded-sm py-3 pr-4 text-left"
+                  className="focus-ring group flex min-w-0 flex-col gap-1.5 rounded-sm py-3 pr-3 text-left md:gap-2 md:pr-4"
                   href={`/artworks/${previousArtwork.slug}`}
                 >
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-moss">
-                    <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-1" />
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-moss md:gap-2 md:text-sm">
+                    <ArrowLeft className="h-3.5 w-3.5 transition group-hover:-translate-x-1 md:h-4 md:w-4" />
                     이전 작품
                   </span>
-                  <span className="font-serif text-2xl leading-tight text-ink">
+                  <span className="block truncate font-serif text-xl leading-tight text-ink md:text-2xl">
                     {previousArtwork.translation.title}
                   </span>
                 </Link>
@@ -221,14 +221,14 @@ export function ArtworkDetailClient({
 
               {nextArtwork ? (
                 <Link
-                  className="focus-ring group flex flex-col gap-2 rounded-sm py-3 text-left md:items-end md:pl-4 md:text-right"
+                  className="focus-ring group flex min-w-0 flex-col items-end gap-1.5 rounded-sm py-3 pl-3 text-right md:gap-2 md:pl-4"
                   href={`/artworks/${nextArtwork.slug}`}
                 >
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-moss">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-moss md:gap-2 md:text-sm">
                     다음 작품
-                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                    <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-1 md:h-4 md:w-4" />
                   </span>
-                  <span className="font-serif text-2xl leading-tight text-ink">
+                  <span className="block max-w-full truncate font-serif text-xl leading-tight text-ink md:text-2xl">
                     {nextArtwork.translation.title}
                   </span>
                 </Link>
