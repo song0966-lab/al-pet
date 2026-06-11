@@ -177,4 +177,28 @@ describe('ArtworkDetailClient', () => {
 
     expect(screen.queryByRole('dialog', { name: '확대 이미지' })).not.toBeInTheDocument();
   });
+
+  it('stabilizes the enlarged image viewer for mobile closing', () => {
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    render(<ArtworkDetailClient initialArtwork={artwork} initialArtworks={[artwork]} slug="slow-light" />);
+
+    fireEvent.click(screen.getByRole('button', { name: '작품 이미지 크게 보기' }));
+
+    const dialog = screen.getByRole('dialog', { name: '확대 이미지' });
+    const closeButton = within(dialog).getByRole('button', { name: '확대 이미지 닫기' });
+
+    expect(document.body.style.overflow).toBe('hidden');
+    expect(document.documentElement.style.overflow).toBe('hidden');
+    expect(dialog).toHaveClass('overflow-hidden');
+    expect(dialog).toHaveClass('overscroll-contain');
+    expect(closeButton).toHaveClass('z-10');
+    expect(closeButton).toHaveClass('h-12');
+    expect(closeButton).toHaveClass('w-12');
+
+    fireEvent.click(closeButton);
+
+    expect(document.body.style.overflow).toBe('auto');
+    expect(document.documentElement.style.overflow).toBe('auto');
+  });
 });
