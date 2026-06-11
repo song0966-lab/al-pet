@@ -81,7 +81,7 @@ describe('GalleryCatalog', () => {
     render(<GalleryCatalog initialArtworks={artworks} initialSections={sections} />);
 
     const title = screen.getByRole('heading', { name: '작품 목록' });
-    const search = screen.getByPlaceholderText('작품명, 작가명, 재료 검색');
+    const search = screen.getByPlaceholderText('작품명, 작가명, 위치 검색');
     const categories = screen.getByLabelText('작품 카테고리');
     const cardGrid = screen.getByLabelText('작품 카드 목록');
     const catalog = screen.getByLabelText('작품 목록');
@@ -104,7 +104,7 @@ describe('GalleryCatalog', () => {
 
     render(<GalleryCatalog initialArtworks={artworks} initialSections={sections} />);
 
-    fireEvent.change(screen.getByPlaceholderText('작품명, 작가명, 재료 검색'), {
+    fireEvent.change(screen.getByPlaceholderText('작품명, 작가명, 위치 검색'), {
       target: { value: 'Blue' }
     });
     fireEvent.click(screen.getByRole('button', { name: '기억의 방' }));
