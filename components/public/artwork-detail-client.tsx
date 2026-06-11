@@ -39,14 +39,22 @@ export function ArtworkDetailClient({
       return;
     }
 
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setIsImageViewerOpen(false);
       }
     };
 
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isImageViewerOpen]);
 
   if (!loaded) {
@@ -234,13 +242,13 @@ export function ArtworkDetailClient({
         <div
           aria-label="확대 이미지"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/90 px-4 py-6 text-paper md:px-8"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden overscroll-contain bg-ink/90 px-4 py-6 text-paper md:px-8"
           role="dialog"
           onClick={() => setIsImageViewerOpen(false)}
         >
           <button
             aria-label="확대 이미지 닫기"
-            className="focus-ring absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-sm bg-paper text-ink shadow-sm md:right-6 md:top-6"
+            className="focus-ring absolute right-4 top-4 z-10 inline-flex h-12 w-12 touch-manipulation items-center justify-center rounded-sm bg-paper text-ink shadow-sm md:right-6 md:top-6"
             type="button"
             onClick={() => setIsImageViewerOpen(false)}
           >
