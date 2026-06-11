@@ -9,7 +9,7 @@ export function SiteHeader() {
         </Link>
         <nav className="flex items-center gap-4 text-sm text-graphite">
           <Link className="focus-ring rounded-sm hover:text-ink" href="/">
-            작품
+            홈
           </Link>
           <Link className="focus-ring rounded-sm hover:text-ink" href="/admin/artworks">
             관리자
