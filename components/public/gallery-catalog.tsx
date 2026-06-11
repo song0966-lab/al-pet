@@ -115,7 +115,7 @@ export function GalleryCatalog({
           <input
             className="w-full bg-transparent text-base outline-none placeholder:text-graphite/55"
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="작품명, 작가명, 재료 검색"
+            placeholder="작품명, 작가명, 위치 검색"
             value={query}
           />
         </label>
