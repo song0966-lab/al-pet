@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, Maximize2, X } from 'lucide-react';
+import { ALargeSmall, ArrowLeft, ArrowRight, Maximize2, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -22,6 +22,7 @@ export function ArtworkDetailClient({
   const [artworks, setArtworks] = useState(initialArtworks);
   const [loaded, setLoaded] = useState(Boolean(initialArtwork));
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+  const [isLargeReadingText, setIsLargeReadingText] = useState(false);
 
   useEffect(() => {
     if (!hasSupabaseConfig()) {
@@ -72,14 +73,35 @@ export function ArtworkDetailClient({
     currentIndex >= 0 && currentIndex < orderedArtworks.length - 1
       ? orderedArtworks[currentIndex + 1]
       : null;
+  const readingTextClassName = isLargeReadingText
+    ? 'space-y-7 text-xl leading-9 text-graphite md:font-serif md:text-3xl md:leading-[3rem] md:text-ink'
+    : 'space-y-7 text-lg leading-8 text-graphite md:font-serif md:text-2xl md:leading-10 md:text-ink';
+  const artistNoteClassName = isLargeReadingText
+    ? 'mt-3 text-xl leading-9 md:text-2xl md:leading-10'
+    : 'mt-3 text-lg leading-8';
 
   return (
     <main className="bg-paper">
       <article className="mx-auto max-w-6xl px-5 pb-20 pt-6 md:pt-10">
-        <Link className="focus-ring inline-flex items-center gap-2 text-sm text-moss" href="/?restore=gallery">
-          <ArrowLeft className="h-4 w-4" />
-          작품 목록
-        </Link>
+        <div className="flex items-center justify-between gap-4">
+          <Link className="focus-ring inline-flex items-center gap-2 text-sm text-moss" href="/?restore=gallery">
+            <ArrowLeft className="h-4 w-4" />
+            작품 목록
+          </Link>
+          <button
+            aria-pressed={isLargeReadingText}
+            className={`focus-ring inline-flex h-8 shrink-0 items-center gap-1.5 rounded-sm border px-2.5 text-xs font-semibold transition ${
+              isLargeReadingText
+                ? 'border-ink bg-ink text-paper'
+                : 'border-ink/20 bg-paper text-ink hover:border-ink/40'
+            }`}
+            onClick={() => setIsLargeReadingText((current) => !current)}
+            type="button"
+          >
+            <ALargeSmall className="h-3.5 w-3.5" aria-hidden="true" />
+            {isLargeReadingText ? '기본 글자' : '글자 크게'}
+          </button>
+        </div>
 
         <section
           aria-label="작품 상세"
@@ -140,7 +162,7 @@ export function ArtworkDetailClient({
         </section>
 
         <section aria-label="작품 소개" className="mx-auto mt-12 max-w-3xl md:mt-16">
-          <div className="space-y-7 text-lg leading-8 text-graphite md:font-serif md:text-2xl md:leading-10 md:text-ink">
+          <div className={readingTextClassName}>
             {artwork.translation.body.split('\n').map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
@@ -153,7 +175,7 @@ export function ArtworkDetailClient({
             className="mx-auto mt-10 max-w-3xl border-l-2 border-clay pl-6 text-graphite"
           >
             <p className="text-sm font-semibold text-clay">작가 노트</p>
-            <blockquote className="mt-3 text-lg leading-8">{artwork.translation.artistNote}</blockquote>
+            <blockquote className={artistNoteClassName}>{artwork.translation.artistNote}</blockquote>
           </aside>
         ) : null}
 
