@@ -135,6 +135,33 @@ describe('ArtworkDetailClient', () => {
     expect(position.compareDocumentPosition(navigation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
+  it('lets visitors enlarge and reset the readable artwork text', () => {
+    render(<ArtworkDetailClient initialArtwork={artwork} initialArtworks={[artwork]} slug="slow-light" />);
+
+    const body = screen.getByLabelText('작품 소개');
+    const bodyText = within(body).getByText('작품 앞에서 잠시 멈추는 시간을 다룹니다.').parentElement;
+    const artistNote = screen.getByLabelText('작가 노트');
+    const artistNoteText = within(artistNote).getByText('빛은 멈춘 것처럼 보여도 조금씩 옮겨갑니다.');
+    const enlargeButton = screen.getByRole('button', { name: '글자 크게' });
+
+    expect(enlargeButton).toHaveAttribute('aria-pressed', 'false');
+    expect(bodyText).toHaveClass('text-lg');
+    expect(artistNoteText).toHaveClass('text-lg');
+
+    fireEvent.click(enlargeButton);
+
+    const resetButton = screen.getByRole('button', { name: '기본 글자' });
+    expect(resetButton).toHaveAttribute('aria-pressed', 'true');
+    expect(bodyText).toHaveClass('text-xl');
+    expect(artistNoteText).toHaveClass('text-xl');
+
+    fireEvent.click(resetButton);
+
+    expect(screen.getByRole('button', { name: '글자 크게' })).toHaveAttribute('aria-pressed', 'false');
+    expect(bodyText).toHaveClass('text-lg');
+    expect(artistNoteText).toHaveClass('text-lg');
+  });
+
   it('opens and closes an enlarged image viewer from the artwork image', () => {
     render(<ArtworkDetailClient initialArtwork={artwork} initialArtworks={[artwork]} slug="slow-light" />);
 
