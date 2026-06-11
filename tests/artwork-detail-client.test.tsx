@@ -116,6 +116,34 @@ describe('ArtworkDetailClient', () => {
     expect(screen.getAllByRole('link', { name: /작품 목록/ })).toHaveLength(1);
   });
 
+  it('keeps previous and next artwork links in two compact mobile columns', () => {
+    render(
+      <ArtworkDetailClient
+        initialArtwork={artwork}
+        initialArtworks={[artwork, previousArtwork, nextArtwork]}
+        slug="slow-light"
+      />
+    );
+
+    const navigation = screen.getByLabelText('이전 다음 작품');
+    const linkGrid = navigation.firstElementChild;
+    const previousLink = within(navigation).getByRole('link', { name: /이전 작품.*푸른 방을 위한 습작/ });
+    const nextLink = within(navigation).getByRole('link', { name: /다음 작품.*겹쳐진 오후/ });
+    const previousTitle = within(previousLink).getByText('푸른 방을 위한 습작');
+    const nextTitle = within(nextLink).getByText('겹쳐진 오후');
+
+    expect(linkGrid).toHaveClass('grid-cols-2');
+    expect(previousLink).toHaveClass('min-w-0');
+    expect(nextLink).toHaveClass('min-w-0');
+    expect(nextLink).toHaveClass('text-right');
+    expect(previousTitle).toHaveClass('truncate');
+    expect(previousTitle).toHaveClass('text-xl');
+    expect(previousTitle).toHaveClass('md:text-2xl');
+    expect(nextTitle).toHaveClass('truncate');
+    expect(nextTitle).toHaveClass('text-xl');
+    expect(nextTitle).toHaveClass('md:text-2xl');
+  });
+
   it('shows the current artwork position before previous and next navigation', () => {
     render(
       <ArtworkDetailClient
