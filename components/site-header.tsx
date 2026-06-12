@@ -11,7 +11,7 @@ export function SiteHeader() {
           <Link className="focus-ring rounded-sm hover:text-ink" href="/">
             홈
           </Link>
-          <Link className="focus-ring rounded-sm hover:text-ink" href="/admin/artworks">
+          <Link className="focus-ring rounded-sm hover:text-ink" href="/admin">
             관리자
           </Link>
         </nav>
