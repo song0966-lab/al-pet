@@ -9,6 +9,6 @@ describe('SiteHeader', () => {
 
     expect(screen.getByRole('link', { name: '홈' })).toHaveAttribute('href', '/');
     expect(screen.queryByRole('link', { name: '작품' })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: '관리자' })).toHaveAttribute('href', '/admin/artworks');
+    expect(screen.getByRole('link', { name: '관리자' })).toHaveAttribute('href', '/admin');
   });
 });
