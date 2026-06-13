@@ -1,5 +1,5 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ArtworkEditor } from '@/components/admin/artwork-editor';
 import type { ArtworkWithTranslation } from '@/lib/types';
@@ -7,6 +7,7 @@ import type { ArtworkWithTranslation } from '@/lib/types';
 const push = vi.fn();
 const refresh = vi.fn();
 const replace = vi.fn();
+const saveArtwork = vi.hoisted(() => vi.fn());
 
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -53,7 +54,7 @@ const artworks: ArtworkWithTranslation[] = [
 vi.mock('@/lib/admin-artwork-store', () => ({
   getAdminSession: vi.fn(async () => ({ email: 'curator@example.com', mode: 'demo' })),
   listAdminArtworks: vi.fn(async () => artworks),
-  saveArtwork: vi.fn(),
+  saveArtwork,
   signOutAdmin: vi.fn(),
   uploadArtworkImage: vi.fn()
 }));
@@ -70,6 +71,14 @@ vi.mock('@/lib/admin-section-store', () => ({
 }));
 
 describe('ArtworkEditor', () => {
+  beforeEach(() => {
+    push.mockClear();
+    refresh.mockClear();
+    replace.mockClear();
+    saveArtwork.mockReset();
+    saveArtwork.mockResolvedValue(undefined);
+  });
+
   it('places the representative image before the basic information form', async () => {
     render(<ArtworkEditor artworkId="artwork-1" />);
 
@@ -107,5 +116,38 @@ describe('ArtworkEditor', () => {
     const imagePanel = screen.getByLabelText('대표 이미지');
     expect(within(imagePanel).getByText('대표 이미지가 아직 없습니다.')).toBeInTheDocument();
     expect(within(imagePanel).getByText('이미지를 업로드하면 미리보기가 표시됩니다.')).toBeInTheDocument();
+  });
+
+  it('summarizes required field errors when saving fails', async () => {
+    saveArtwork.mockRejectedValueOnce({
+      flatten: () => ({
+        fieldErrors: {
+          imageUrl: ['대표 이미지를 추가하세요.'],
+          slug: ['작품 주소를 입력하세요.'],
+          'translation.title': ['작품 제목을 입력하세요.'],
+          'translation.body': ['작품 소개 본문을 입력하세요.']
+        }
+      })
+    });
+
+    render(<ArtworkEditor />);
+
+    expect(await screen.findByRole('heading', { name: 'New Artwork / 새 작품' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save / 저장' }));
+
+    const summary = await screen.findByRole('alert');
+    expect(within(summary).getByText('저장할 수 없습니다')).toBeInTheDocument();
+    expect(within(summary).getByText('아래 항목을 확인해주세요.')).toBeInTheDocument();
+    expect(within(summary).getByText('대표 이미지')).toBeInTheDocument();
+    expect(within(summary).getByText('작품 주소')).toBeInTheDocument();
+    expect(within(summary).getByText('작품 제목')).toBeInTheDocument();
+    expect(within(summary).getByText('작품 소개 본문')).toBeInTheDocument();
+
+    expect(screen.getByText('대표 이미지를 추가하세요.')).toBeInTheDocument();
+    expect(screen.getByText('작품 주소를 입력하세요.')).toBeInTheDocument();
+    expect(screen.getByText('작품 제목을 입력하세요.')).toBeInTheDocument();
+    expect(screen.getByText('작품 소개 본문을 입력하세요.')).toBeInTheDocument();
+    expect(push).not.toHaveBeenCalled();
   });
 });
