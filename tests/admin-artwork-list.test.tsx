@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { AdminArtworkList } from '@/components/admin/admin-artwork-list';
@@ -59,7 +59,7 @@ const artworks: ArtworkWithTranslation[] = [
     createdBy: 'curator@example.com',
     updatedBy: 'curator@example.com',
     createdAt: '2026-06-01T00:00:00.000Z',
-    updatedAt: '2026-06-01T00:00:00.000Z',
+    updatedAt: '2026-06-03T00:00:00.000Z',
     translation: {
       locale: 'ko',
       title: '기억의 방',
@@ -130,5 +130,38 @@ describe('AdminArtworkList', () => {
     expect(subtext.className).toContain('text-graphite/60');
 
     await waitFor(() => expect(replace).not.toHaveBeenCalled());
+  });
+
+  it('filters, searches, and sorts the artwork list from admin controls', async () => {
+    render(<AdminArtworkList />);
+
+    expect(await screen.findByRole('heading', { name: '작품 관리' })).toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: '전체 2' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: '공개 1' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '비공개 1' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '비공개 1' }));
+
+    expect(screen.queryByRole('heading', { name: '빛의 기동' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '기억의 방' })).toBeInTheDocument();
+
+    const search = screen.getByRole('searchbox', { name: '작품 검색' });
+    fireEvent.change(search, { target: { value: '김서연' } });
+
+    expect(screen.getByText('조건에 맞는 작품이 없습니다.')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: '전체 2' }));
+    expect(screen.getByRole('heading', { name: '빛의 기동' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: '기억의 방' })).not.toBeInTheDocument();
+
+    fireEvent.change(search, { target: { value: '' } });
+    fireEvent.change(screen.getByLabelText('정렬'), { target: { value: 'updated-desc' } });
+
+    const recentArtwork = screen.getByRole('heading', { name: '기억의 방' });
+    const olderArtwork = screen.getByRole('heading', { name: '빛의 기동' });
+    expect(
+      recentArtwork.compareDocumentPosition(olderArtwork) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
   });
 });
