@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ImagePlus, Save } from 'lucide-react';
+import { AlertCircle, ArrowLeft, ImagePlus, Save } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -46,6 +46,7 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [imagePreviewFailed, setImagePreviewFailed] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -89,6 +90,10 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
 
     void load();
   }, [artworkId, router]);
+
+  useEffect(() => {
+    setImagePreviewFailed(false);
+  }, [draft.imageUrl]);
 
   const title = useMemo(() => (artworkId ? 'Edit Artwork / 작품 수정' : 'New Artwork / 새 작품'), [artworkId]);
 
@@ -171,21 +176,33 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
           onSubmit={handleSubmit}
         >
           <section aria-label="대표 이미지" className="space-y-4">
-            <h2 className="font-serif text-3xl text-ink">대표 이미지</h2>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-mist">
-              {draft.imageUrl ? (
-                <Image
-                  alt={draft.translation.title || 'Artwork image / 작품 이미지'}
-                  className="object-cover"
-                  fill
-                  sizes="(min-width: 1024px) 38vw, 100vw"
-                  src={draft.imageUrl}
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-graphite">
-                  <ImagePlus className="h-10 w-10" />
-                </div>
-              )}
+            <div className="flex items-center gap-2">
+              <h2 className="font-serif text-3xl text-ink">대표 이미지</h2>
+              <RequiredBadge />
+            </div>
+            <div className="overflow-hidden rounded-sm border border-ink/10 bg-paper">
+              <div className="border-b border-ink/10 px-4 py-3">
+                <p className="text-sm font-semibold text-ink">대표 이미지 미리보기</p>
+                <p className="mt-1 text-xs text-graphite">
+                  {draft.imageUrl && !imagePreviewFailed
+                    ? '현재 관람 화면에 보일 대표 이미지입니다.'
+                    : '업로드한 이미지를 여기에서 확인합니다.'}
+                </p>
+              </div>
+              <div className="relative aspect-[4/5] overflow-hidden bg-mist">
+                {draft.imageUrl && !imagePreviewFailed ? (
+                  <Image
+                    alt={draft.translation.title || 'Artwork image / 작품 이미지'}
+                    className="object-cover"
+                    fill
+                    onError={() => setImagePreviewFailed(true)}
+                    sizes="(min-width: 1024px) 38vw, 100vw"
+                    src={draft.imageUrl}
+                  />
+                ) : (
+                  <ImagePreviewState hasBrokenImage={Boolean(draft.imageUrl && imagePreviewFailed)} />
+                )}
+              </div>
             </div>
             <label className="focus-ring inline-flex h-11 cursor-pointer items-center gap-2 rounded-sm bg-ink px-4 text-sm font-medium text-paper">
               <ImagePlus className="h-4 w-4" />
@@ -202,12 +219,14 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
                 error={fieldErrors['translation.title']?.[0]}
                 label="Title / 작품 제목"
                 onChange={(value) => patchTranslation({ title: value })}
+                required
                 value={draft.translation.title}
               />
               <TextField
                 error={fieldErrors.artistName?.[0]}
                 label="Artist / 작가명"
                 onChange={(value) => patchDraft({ artistName: value })}
+                required
                 value={draft.artistName}
               />
             </div>
@@ -216,6 +235,7 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
                 error={fieldErrors.slug?.[0]}
                 label="Slug / 작품 주소"
                 onChange={(value) => patchDraft({ slug: value })}
+                required
                 value={draft.slug}
               />
               <SelectField
@@ -235,6 +255,7 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
               error={fieldErrors['translation.body']?.[0]}
               label="Body / 작품 소개 본문"
               onChange={(value) => patchTranslation({ body: value })}
+              required
               rows={7}
               value={draft.translation.body}
             />
@@ -295,21 +316,53 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
   );
 }
 
+function RequiredBadge() {
+  return (
+    <span className="inline-flex h-6 items-center rounded-full bg-clay/10 px-2 text-xs font-semibold text-clay">
+      필수
+    </span>
+  );
+}
+
+function ImagePreviewState({ hasBrokenImage }: { hasBrokenImage: boolean }) {
+  return (
+    <div className="flex h-full flex-col items-center justify-center px-6 text-center text-graphite">
+      {hasBrokenImage ? (
+        <AlertCircle className="h-10 w-10 text-clay" />
+      ) : (
+        <ImagePlus className="h-10 w-10 text-graphite/55" />
+      )}
+      <p className="mt-4 text-sm font-semibold text-ink">
+        {hasBrokenImage ? '이미지를 불러오지 못했습니다.' : '대표 이미지가 아직 없습니다.'}
+      </p>
+      <p className="mt-2 text-sm leading-6">
+        {hasBrokenImage
+          ? '다른 이미지를 업로드해주세요.'
+          : '이미지를 업로드하면 미리보기가 표시됩니다.'}
+      </p>
+    </div>
+  );
+}
+
 function TextField({
   label,
   value,
   onChange,
-  error
+  error,
+  required = false
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  required?: boolean;
 }) {
   return (
     <label className="block">
-      <span className="text-sm text-graphite">{label}</span>
+      <FieldLabel label={label} required={required} />
       <input
+        aria-label={label}
+        aria-required={required}
         className="focus-ring mt-2 h-11 w-full rounded-sm border border-ink/15 bg-paper px-3 outline-none"
         onChange={(event) => onChange(event.target.value)}
         value={value}
@@ -332,8 +385,9 @@ function SelectField({
 }) {
   return (
     <label className="block">
-      <span className="text-sm text-graphite">{label}</span>
+      <FieldLabel label={label} />
       <select
+        aria-label={label}
         className="focus-ring mt-2 h-11 w-full rounded-sm border border-ink/15 bg-paper px-3 outline-none"
         onChange={(event) => onChange(event.target.value)}
         value={value}
@@ -360,8 +414,9 @@ function NumberField({
 }) {
   return (
     <label className="block">
-      <span className="text-sm text-graphite">{label}</span>
+      <FieldLabel label={label} />
       <input
+        aria-label={label}
         className="focus-ring mt-2 h-11 w-full rounded-sm border border-ink/15 bg-paper px-3 outline-none"
         onChange={(event) => onChange(Number(event.target.value))}
         type="number"
@@ -376,18 +431,22 @@ function TextArea({
   value,
   rows,
   onChange,
-  error
+  error,
+  required = false
 }: {
   label: string;
   value: string;
   rows: number;
   onChange: (value: string) => void;
   error?: string;
+  required?: boolean;
 }) {
   return (
     <label className="block">
-      <span className="text-sm text-graphite">{label}</span>
+      <FieldLabel label={label} required={required} />
       <textarea
+        aria-label={label}
+        aria-required={required}
         className="focus-ring mt-2 w-full rounded-sm border border-ink/15 bg-paper px-3 py-3 leading-7 outline-none"
         onChange={(event) => onChange(event.target.value)}
         rows={rows}
@@ -395,6 +454,15 @@ function TextArea({
       />
       {error ? <FieldError messages={[error]} /> : null}
     </label>
+  );
+}
+
+function FieldLabel({ label, required = false }: { label: string; required?: boolean }) {
+  return (
+    <span className="flex items-center gap-2 text-sm text-graphite">
+      <span>{label}</span>
+      {required ? <RequiredBadge /> : null}
+    </span>
   );
 }
 
