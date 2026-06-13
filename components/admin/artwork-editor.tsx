@@ -36,6 +36,26 @@ const emptyDraft: ArtworkDraft = {
   }
 };
 
+const fieldErrorLabels: Record<string, string> = {
+  imageUrl: '대표 이미지',
+  slug: '작품 주소',
+  artistName: '작가명',
+  year: '제작 연도',
+  displayOrder: '표시 순서',
+  'translation.title': '작품 제목',
+  'translation.body': '작품 소개 본문'
+};
+
+const fieldErrorOrder = [
+  'imageUrl',
+  'translation.title',
+  'slug',
+  'artistName',
+  'translation.body',
+  'year',
+  'displayOrder'
+];
+
 export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
   const router = useRouter();
   const [session, setSession] = useState<AdminSession | null>(null);
@@ -96,6 +116,7 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
   }, [draft.imageUrl]);
 
   const title = useMemo(() => (artworkId ? 'Edit Artwork / 작품 수정' : 'New Artwork / 새 작품'), [artworkId]);
+  const errorSummaryItems = useMemo(() => getErrorSummaryItems(fieldErrors), [fieldErrors]);
 
   function patchDraft(patch: Partial<ArtworkDraft>) {
     setDraft((current) => ({ ...current, ...patch }));
@@ -170,6 +191,7 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
 
         {isLoading ? <p className="mt-8 text-graphite">Loading / 불러오는 중입니다.</p> : null}
         {message ? <p className="mt-6 text-sm text-clay">{message}</p> : null}
+        {errorSummaryItems.length > 0 ? <SaveErrorSummary items={errorSummaryItems} /> : null}
 
         <form
           className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(280px,0.95fr)_minmax(0,1.05fr)]"
@@ -313,6 +335,36 @@ export function ArtworkEditor({ artworkId }: { artworkId?: string }) {
         </form>
       </section>
     </AdminShell>
+  );
+}
+
+function SaveErrorSummary({ items }: { items: string[] }) {
+  return (
+    <section
+      aria-label="저장 오류 요약"
+      className="mt-8 border border-clay bg-[#fff8f2] p-5"
+      role="alert"
+    >
+      <div className="flex gap-3">
+        <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-clay/10 text-clay">
+          <AlertCircle className="h-5 w-5" />
+        </span>
+        <div>
+          <h2 className="text-lg font-semibold text-ink">저장할 수 없습니다</h2>
+          <p className="mt-2 text-sm text-graphite">아래 항목을 확인해주세요.</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {items.map((item) => (
+              <span
+                className="inline-flex h-7 items-center rounded-full bg-clay/10 px-3 text-xs font-semibold text-clay"
+                key={item}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -468,4 +520,17 @@ function FieldLabel({ label, required = false }: { label: string; required?: boo
 
 function FieldError({ messages }: { messages: string[] }) {
   return <p className="mt-2 text-sm text-clay">{messages[0]}</p>;
+}
+
+function getErrorSummaryItems(fieldErrors: Record<string, string[]>) {
+  const errorKeys = new Set(
+    Object.entries(fieldErrors)
+      .filter(([, messages]) => messages.length > 0)
+      .map(([key]) => key)
+  );
+
+  return [
+    ...fieldErrorOrder.filter((key) => errorKeys.delete(key)),
+    ...Array.from(errorKeys).sort((left, right) => left.localeCompare(right, 'ko'))
+  ].map((key) => fieldErrorLabels[key] ?? key);
 }
