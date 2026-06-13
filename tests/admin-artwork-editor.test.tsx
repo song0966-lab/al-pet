@@ -80,17 +80,32 @@ describe('ArtworkEditor', () => {
 
     expect(imagePanel.compareDocumentPosition(infoPanel) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(within(imagePanel).getByText('대표 이미지')).toBeInTheDocument();
+    expect(within(imagePanel).getByText('필수')).toBeInTheDocument();
+    expect(within(imagePanel).getByText('대표 이미지 미리보기')).toBeInTheDocument();
+    expect(within(imagePanel).getByText('현재 관람 화면에 보일 대표 이미지입니다.')).toBeInTheDocument();
     expect(within(imagePanel).getByRole('img', { name: '느린 빛' })).toHaveAttribute(
       'src',
       'https://example.com/slow-light.jpg'
     );
 
     expect(within(infoPanel).getByText('기본 정보')).toBeInTheDocument();
+    expect(within(infoPanel).getAllByText('필수')).toHaveLength(4);
     expect(within(infoPanel).getByLabelText('Title / 작품 제목')).toHaveValue('느린 빛');
     expect(within(infoPanel).getByLabelText('Artist / 작가명')).toHaveValue('김서연');
+    expect(within(infoPanel).getByLabelText('Slug / 작품 주소')).toHaveValue('slow-light');
     expect(within(infoPanel).getByLabelText('Body / 작품 소개 본문')).toHaveValue('작품 소개 본문');
     expect(screen.queryByText('작품 해설')).not.toBeInTheDocument();
 
     await waitFor(() => expect(replace).not.toHaveBeenCalled());
+  });
+
+  it('shows an empty image preview state when creating a new artwork', async () => {
+    render(<ArtworkEditor />);
+
+    expect(await screen.findByRole('heading', { name: 'New Artwork / 새 작품' })).toBeInTheDocument();
+
+    const imagePanel = screen.getByLabelText('대표 이미지');
+    expect(within(imagePanel).getByText('대표 이미지가 아직 없습니다.')).toBeInTheDocument();
+    expect(within(imagePanel).getByText('이미지를 업로드하면 미리보기가 표시됩니다.')).toBeInTheDocument();
   });
 });
